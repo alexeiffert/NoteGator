@@ -9,18 +9,21 @@ import java.util.ArrayList;
 public class HeaderInfo {
 
     private String name;
-    private ArrayList<DetailInfo> productList = new ArrayList<DetailInfo>();
+    private ArrayList<DetailInfo> notifications = new ArrayList<DetailInfo>();
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public ArrayList<DetailInfo> getProductList() {
-        return productList;
+        return notifications;
     }
-    public void setProductList(ArrayList<DetailInfo> productList) {
-        this.productList = productList;
+
+    public void setProductList(ArrayList<DetailInfo> notifications) {
+        this.notifications = notifications;
     }
 }

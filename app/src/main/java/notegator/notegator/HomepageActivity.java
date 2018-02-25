@@ -30,53 +30,39 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
         setContentView(R.layout.activity_homepage);
 
         //Just add some data to start with
-        AddProduct();
+       populate();
 
         //get reference to the ExpandableListView
         expandableListView = (ExpandableListView) findViewById(R.id.myList);
+
         //create the adapter by passing your ArrayList data
         listAdapter = new MyListAdapter(HomepageActivity.this, SectionList);
+
         //attach the adapter to the list
         expandableListView.setAdapter(listAdapter);
 
-        //expand all Groups
-        expandAll();
-
         //listener for child row click
         expandableListView.setOnChildClickListener(myListItemClicked);
+
         //listener for group heading click
         expandableListView.setOnGroupClickListener(myListGroupClicked);
         collapseAll();
     }
 
     public void onClick(View v) {
-/*
-        switch (v.getId()) {
+        //TODO
+    }
 
-            //add entry to the List
-            case R.id.add:
+    //load some initial data into out list
+    private void populate(){
+        //TODO db entry here
 
-                Spinner spinner = (Spinner) findViewById(R.id.department);
-                String department = spinner.getSelectedItem().toString();
-                EditText editText = (EditText) findViewById(R.id.product);
-                String product = editText.getText().toString();
-                editText.setText("");
+        addProduct("Vegetable","Potato");
+        addProduct("Vegetable","Cabbage");
+        addProduct("Vegetable","Onion");
 
-                //add a new item to the list
-                int groupPosition = addProduct(department,product);
-                //notify the list so that changes can take effect
-                listAdapter.notifyDataSetChanged();
-
-                //collapse all groups
-                collapseAll();
-                //expand the group where item was just added
-                expandableListView.expandGroup(groupPosition);
-                //set the current group to be selected so that it becomes visible
-                expandableListView.setSelectedGroup(groupPosition);
-
-                break;
-        }
-        */
+        addProduct("Fruits","Apple");
+        addProduct("Fruits","Orange");
     }
 
     //method to expand all groups
@@ -95,30 +81,21 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
         }
     }
 
-    //load some initial data into out list
-    private void AddProduct(){
-
-        addProduct("Vegetable","Potato");
-        addProduct("Vegetable","Cabbage");
-        addProduct("Vegetable","Onion");
-
-        addProduct("Fruits","Apple");
-        addProduct("Fruits","Orange");
-    }
-
     //our child listener
     private OnChildClickListener myListItemClicked =  new OnChildClickListener() {
 
         public boolean onChildClick(ExpandableListView parent, View v,
                                     int groupPosition, int childPosition, long id) {
-
             //get the group header
             HeaderInfo headerInfo = SectionList.get(groupPosition);
+
             //get the child info
             DetailInfo detailInfo =  headerInfo.getProductList().get(childPosition);
+
             //display it or do something with it
             Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName()
-                    + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+                           + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+
             return false;
         }
     };
@@ -128,12 +105,12 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
 
         public boolean onGroupClick(ExpandableListView parent, View v,
                                     int groupPosition, long id) {
-
             //get the group header
             HeaderInfo headerInfo = SectionList.get(groupPosition);
+
             //display it or do something with it
             Toast.makeText(getBaseContext(), "Child on Header " + headerInfo.getName(),
-                    Toast.LENGTH_LONG).show();
+                           Toast.LENGTH_LONG).show();
 
             return false;
         }
@@ -146,6 +123,7 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
 
         //check the hash map if the group already exists
         HeaderInfo headerInfo = mySection.get(department);
+
         //add the group if doesn't exists
         if(headerInfo == null){
             headerInfo = new HeaderInfo();
@@ -156,8 +134,10 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
 
         //get the children for the group
         ArrayList<DetailInfo> productList = headerInfo.getProductList();
+
         //size of the children list
         int listSize = productList.size();
+
         //add to the counter
         listSize++;
 
