@@ -57,12 +57,12 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
     private void populate(){
         //TODO db entry here
 
-        addProduct("Vegetable","Potato");
-        addProduct("Vegetable","Cabbage");
-        addProduct("Vegetable","Onion");
+        addProduct("CIS4914","Eddie Murphey added notes for February 28, 2018");
+        addProduct("CIS4914","Johannes Kepler posted a response to your comment from January 1, 2018");
+        addProduct("CIS4914","Bob added notes for Exam II");
 
-        addProduct("Fruits","Apple");
-        addProduct("Fruits","Orange");
+        addProduct("COP4600","Odysseus added notes for February 26, 2018");
+        addProduct("COP4600","Aeneas asked a question on February 2, 2018");
     }
 
     //method to expand all groups
@@ -93,7 +93,7 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
             DetailInfo detailInfo =  headerInfo.getProductList().get(childPosition);
 
             //display it or do something with it
-            Toast.makeText(getBaseContext(), "Clicked on Detail " + headerInfo.getName()
+            Toast.makeText(getBaseContext(), "You're looking at " + headerInfo.getName()
                            + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
 
             return false;
@@ -109,7 +109,7 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
             HeaderInfo headerInfo = SectionList.get(groupPosition);
 
             //display it or do something with it
-            Toast.makeText(getBaseContext(), "Child on Header " + headerInfo.getName(),
+            Toast.makeText(getBaseContext(), "You're looking at " + headerInfo.getName(),
                            Toast.LENGTH_LONG).show();
 
             return false;
