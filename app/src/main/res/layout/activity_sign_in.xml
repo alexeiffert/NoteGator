@@ -25,22 +25,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_facebook"
         style="@android:style/Widget.DeviceDefault.Button"
         android:layout_width="170dp"
         android:layout_height="41dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:background="@color/colorPrimaryDark"
         android:text="@string/prompt_facebook"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/button_google"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_google"
         style="@android:style/Widget.DeviceDefault.Button"
         android:layout_width="169dp"
         android:layout_height="42dp"
@@ -50,13 +50,13 @@
         android:background="@android:color/holo_red_light"
         android:fontFamily="sans-serif"
         android:text="@string/prompt_google"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintBottom_toTopOf="@+id/btn_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btn_email"
         style="@android:style/Widget.DeviceDefault.Button"
         android:layout_width="170dp"
         android:layout_height="42dp"
@@ -71,7 +71,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/register_email_text"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -85,7 +85,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.552"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3"
+        app:layout_constraintTop_toBottomOf="@+id/btn_email"
         app:layout_constraintVertical_bias="0.069" />
 
     <ImageView

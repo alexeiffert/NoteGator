@@ -5,7 +5,7 @@
     <string name="prompt_facebook">Log in with Facebook</string>
     <string name="prompt_google">Log in with Google</string>
     <string name="prompt_email">Log in with Email</string>
-    <string name="prompt_email_signup">Log in with Facebook</string>
+    <string name="prompt_email_signup">Or, register with email</string>
 
     <string name="description_logo">Note Gator logo</string>
     <string name="description_login_background">Login screen background</string>
