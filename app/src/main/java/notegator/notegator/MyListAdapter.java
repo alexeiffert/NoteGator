@@ -40,9 +40,9 @@ public class MyListAdapter extends BaseExpandableListAdapter {
 
         DetailInfo detailInfo = (DetailInfo) getChild(groupPosition, childPosition);
         if (view == null) {
-            LayoutInflater infalInflater = (LayoutInflater)
+            LayoutInflater inflater = (LayoutInflater)
                     context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = infalInflater.inflate(R.layout.child_row, null);
+            view = inflater.inflate(R.layout.child_row, null);
         }
 
         //TextView sequence = (TextView) view.findViewById(R.id.sequence);
