@@ -35,12 +35,12 @@
         android:background="@color/colorPrimaryDark"
         android:text="@string/prompt_facebook"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:layout_constraintBottom_toTopOf="@+id/button_google"
+        app:layout_constraintBottom_toTopOf="@+id/btn_google"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button_google"
+        android:id="@+id/btn_google"
         style="@android:style/Widget.DeviceDefault.Button"
         android:layout_width="169dp"
         android:layout_height="42dp"
