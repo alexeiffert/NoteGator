@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -16,7 +18,19 @@ import android.widget.Toast;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 public class HomepageActivity extends AppCompatActivity implements OnClickListener {
+
+    private FirebaseDatabase db;
 
     private LinkedHashMap<String, HeaderInfo> mySection = new LinkedHashMap<>();
     private ArrayList<HeaderInfo> SectionList = new ArrayList<>();
@@ -29,8 +43,8 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        //Just add some data to start with
-       populate();
+        db = FirebaseDatabase.getInstance();
+        populate();
 
         //get reference to the ExpandableListView
         expandableListView = (ExpandableListView) findViewById(R.id.myList);
@@ -56,6 +70,36 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
     //load some initial data into out list
     private void populate(){
         //TODO db entry here
+        DatabaseReference ref = db.getReference("news");
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String key = dataSnapshot.getKey().toString();
+                String text = dataSnapshot.getValue().toString();
+                addProduct(key, text);
+                listAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         addProduct("CIS4914","Eddie Murphey added notes for February 28, 2018");
         addProduct("CIS4914","Johannes Kepler posted a response to your comment from January 1, 2018");
@@ -116,7 +160,6 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
         }
     };
 
-    //here we maintain our products in various departments
     private int addProduct(String department, String product){
 
         int groupPosition = 0;
@@ -137,9 +180,7 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
 
         //size of the children list
         int listSize = productList.size();
-
-        //add to the counter
-        listSize++;
+        ++listSize;
 
         //create a new child and add that to the group
         DetailInfo detailInfo = new DetailInfo();

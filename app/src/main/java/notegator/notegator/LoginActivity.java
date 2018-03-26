@@ -183,7 +183,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 Toast.makeText(LoginActivity.this, "Authentication succeeded!",
                                         Toast.LENGTH_SHORT).show();
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                                startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
                                 finish();
 
                             } else {
