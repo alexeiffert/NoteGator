@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "693033150527",
+    "firebase_url": "https://notegator.firebaseio.com",
+    "project_id": "notegator",
+    "storage_bucket": "notegator.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693033150527:android:2cf68481744ba4ca",
+        "android_client_info": {
+          "package_name": "notegator.notegator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693033150527-i6aut3dmrv7j41l5p6jpfmb8s8o6s9ko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdCKK7N4_k200eUgm0hBr2Y3zz847OL74"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
