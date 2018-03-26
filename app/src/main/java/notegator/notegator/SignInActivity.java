@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 
-public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
+public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
@@ -35,11 +35,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         mAuth = FirebaseAuth.getInstance();
 
-        //checks if user is already signed in
-        if(mAuth.getCurrentUser() != null){
-            //startActivity(new Intent(getApplicationContext(), .class));
-            //finish();
-        }
+        checkIfLogged(); // Starts home if logged
         addButtons();
     }
 
@@ -98,45 +94,14 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onStart() {
         super.onStart();
-        isLogged();
+        checkIfLogged();
     }
 
-    private void isLogged() {
+    private void checkIfLogged() {
         // Check if user is signed in
         FirebaseUser user = mAuth.getCurrentUser();
-        updateUI(user);
-    }
-
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            // update buttons and stuff here with user info
-            //mEmailTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
-            //mUidTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-            //go to home screen
-            //startActivity(new Intent(getApplicationContext(), Home.class));
-            //finish();
-
-            //findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
-            //findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-        }
-        /*else {
-            // update buttons as if user is signed out
-            mEmailTextView.setText(R.string.signed_out);
-            mUidTextView.setText(null);
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_button).setVisibility(View.INVISIBLE);
-        }*/
-    }
-    public void onClick(View v) {
-        /*
-        int i = v.getId();
-        if (i == R.id.sign_in_button) {
-            signIn();
-        } else if (i == R.id.sign_out_button) {
-            signOut();
-        } else if (i == R.id.email_sign_in_button) {
-            signInEmail();
-        }*/
+        if(user != null)
+            startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
     }
 }
 
