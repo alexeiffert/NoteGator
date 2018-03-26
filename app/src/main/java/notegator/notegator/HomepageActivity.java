@@ -3,6 +3,7 @@ package notegator.notegator;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class HomepageActivity extends AppCompatActivity implements OnClickListener {
+public class HomepageActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
 
@@ -61,10 +62,6 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
         //listener for group heading click
         expandableListView.setOnGroupClickListener(myListGroupClicked);
         collapseAll();
-    }
-
-    public void onClick(View v) {
-        //TODO
     }
 
     //load some initial data into out list
@@ -156,6 +153,7 @@ public class HomepageActivity extends AppCompatActivity implements OnClickListen
             Toast.makeText(getBaseContext(), "You're looking at " + headerInfo.getName(),
                            Toast.LENGTH_LONG).show();
 
+            startActivity(new Intent(getApplicationContext(), ClassActivity.class));
             return false;
         }
     };

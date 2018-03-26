@@ -23,7 +23,8 @@
     <string name="title_activity_homepage">Note Gator</string>
     <string name="title_activity_login">Sign in</string>
 
-    <item name="visible" type="id"/>
-    <item name="masked" type="id"/>
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
+    <string name="title_activity_class">ClassActivity</string>
 </resources>
 
