@@ -38,7 +38,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         //checks if user is already signed in
         if(mAuth.getCurrentUser() != null){
             //startActivity(new Intent(getApplicationContext(), .class));
-            finish();
+            //finish();
         }
         addButtons();
     }
@@ -68,116 +68,43 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        TextView emailSignUp = findViewById(R.id.register_email_text);
+        final TextView emailSignUp = findViewById(R.id.register_email_text);
         emailSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //goes to sign up activity
-                //startActivity(new Intent(getApplicationContext(), CreateAccount.class));
+                emailSignUp();
             }
         });
     }
 
     private void facebookLogin() {
+        emailLogin();
     }
 
     private void googleLogin() {
+        emailLogin();
     }
 
     private void emailLogin() {
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+    }
+
+    private void emailSignUp() {
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        isLogged();
+    }
 
+    private void isLogged() {
         // Check if user is signed in
         FirebaseUser user = mAuth.getCurrentUser();
-        //updateUI(user);
-    }
-
-    // Result of intent of signing in
-    /*
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                //sign in successful, authenticate
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                //Google sign in failed
-                Log.w(TAG, "Google sign in failed", e);
-                updateUI(null);
-            }
-        }
-    }
-
-    // Authentication with google
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success!
-                    Log.d(TAG, "signInWithCredential:success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
-                } else {
-                    // Sign in failed, show message
-                    Log.w(TAG, "signInWithCredential:failure", task.getException());
-                    Toast.makeText(MainActivity.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                    updateUI(null);
-                }
-            }
-        });
-    }
-
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private void signInEmail() {
-        mAuth.signInWithEmailAndPassword(mEmailField.getText().toString(), mPasswordField.getText().toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            Toast.makeText(MainActivity.this, "Authentication succeeded!",
-                                    Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-                    }
-                });
-    }
-    private void signOut() {
-        // Firebase sign out
-        mAuth.signOut();
-        // Google sign out
-        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                updateUI(null);
-            }
-        });
+        updateUI(user);
     }
 
     private void updateUI(FirebaseUser user) {
@@ -186,26 +113,20 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             //mEmailTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
             //mUidTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
             //go to home screen
-            startActivity(new Intent(getApplicationContext(), Home.class));
-            finish();
+            //startActivity(new Intent(getApplicationContext(), Home.class));
+            //finish();
 
             //findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
             //findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
         }
-        else {
+        /*else {
             // update buttons as if user is signed out
             mEmailTextView.setText(R.string.signed_out);
             mUidTextView.setText(null);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.INVISIBLE);
-        } */
-    /*
+        }*/
     }
-
-    // Do stuff when we click button
-
-    @Override
-*/
     public void onClick(View v) {
         /*
         int i = v.getId();
