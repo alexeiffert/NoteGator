@@ -17,7 +17,7 @@ public class NewsListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private ArrayList<HeaderInfo> classList;
 
-    public NewsListAdapter(Context context, ArrayList<HeaderInfo> classListList) {
+    public NewsListAdapter(Context context, ArrayList<HeaderInfo> classList) {
         this.context = context;
         this.classList = classList;
     }
@@ -45,10 +45,10 @@ public class NewsListAdapter extends BaseExpandableListAdapter {
             view = inflater.inflate(R.layout.child_row, null);
         }
 
-        //TextView sequence = (TextView) view.findViewById(R.id.sequence);
-        //sequence.setText(detailInfo.getSequence().trim() + ") ");
-        TextView childItem = (TextView) view.findViewById(R.id.childItem);
-        childItem.setText(detailInfo.getName().trim());
+        TextView date = (TextView) view.findViewById(R.id.date);
+        date.setText(detailInfo.getDate());
+        TextView text = (TextView) view.findViewById(R.id.text);
+        text.setText(detailInfo.getName().trim());
 
         return view;
     }

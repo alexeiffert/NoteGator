@@ -157,7 +157,7 @@ public class HomepageActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
-                            String date = document.get("date").toString();
+                            String date = document.get("time").toString();
                             String key = document.get("class").toString();
                             String text = document.get("text").toString();
                             String thumbnail = document.get("thumbnail").toString();
