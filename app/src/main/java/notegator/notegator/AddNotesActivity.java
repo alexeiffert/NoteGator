@@ -14,6 +14,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -30,22 +34,60 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class AddNotesActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private StorageReference storageReference;
-
     private Uri photoURI;
+
+    private TextView datePick;
+    private EditText submitDescription;
+    private Button submitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
 
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
         dispatchTakePictureIntent();
+
+        datePick = findViewById(R.id.datePick);
+        submitDescription = findViewById(R.id.description);
+        submitButton = findViewById(R.id.button_submit);
+        addButtonListener();
+    }
+
+    private void submitNotes(){
+        String date = datePick.getText().toString();
+        String description = submitDescription.getText().toString();
+        Map<String, Object> newNotesMap = new HashMap<>();
+        newNotesMap.put("date", date);
+        newNotesMap.put("description", description);
+        newNotesMap.put("uid", mAuth.getUid());
+        newNotesMap.put("image", photoURI.toString());
+
+        db.collection("notes").add(newNotesMap).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),
+                        "Oops, there was a problem. Please try again",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                uploadImage(photoURI);
+            }
+        });
     }
 
     private void dispatchTakePictureIntent() {
@@ -76,7 +118,6 @@ public class AddNotesActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             ImageView imageView = findViewById(R.id.notesPreview);
             imageView.setImageURI(photoURI);
-            uploadImage(photoURI);
         }
     }
 
@@ -109,14 +150,16 @@ public class AddNotesActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddNotesActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),
+                                    "Awesome! Your notes are uploaded.",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddNotesActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddNotesActivity.this, "Oops... "+e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -138,5 +181,14 @@ public class AddNotesActivity extends AppCompatActivity {
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "timePicker");
+    }
+
+    public void addButtonListener(){
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submitNotes();
+            }
+        });
     }
 }

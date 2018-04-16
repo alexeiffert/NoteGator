@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="notegator.notegator.fileprovider"
@@ -25,7 +23,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity
@@ -48,7 +46,12 @@
             android:name=".ClassActivity"
             android:label="@string/title_activity_class"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddNotesActivity"></activity>
+        <activity android:name=".AddNotesActivity" />
+        <activity
+            android:name=".ViewNotes"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_view_notes"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

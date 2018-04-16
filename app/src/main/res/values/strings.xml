@@ -31,5 +31,9 @@
     <string name="prompt_date">When?</string>
     <string name="prompt_description">Add a a brief description</string>
     <string name="button_submit_notes">Submit your notes!</string>
+
+    <string name="title_activity_view_notes">ViewNotes</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
 

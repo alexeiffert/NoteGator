@@ -148,7 +148,7 @@ public class HomepageActivity extends AppCompatActivity {
 
     //Helper methods for Expandable List
     private void populateList(){
-        CollectionReference collectionReference = db.collection("news");
+        CollectionReference collectionReference = db.collection("notes");
         for(String className : userClasses) {
             //TODO trouble with ordering by time
             Query query = collectionReference.whereEqualTo("class", className).limit(20);
@@ -159,7 +159,7 @@ public class HomepageActivity extends AppCompatActivity {
                         for (DocumentSnapshot document : task.getResult()) {
                             String date = document.get("time").toString();
                             String key = document.get("class").toString();
-                            String text = document.get("text").toString();
+                            String text = document.get("description").toString();
                             String thumbnail = document.get("thumbnail").toString();
                             addNews(date, key, text, thumbnail);
                         }
