@@ -12,20 +12,20 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-public class MyListAdapter extends BaseExpandableListAdapter {
+public class NewsListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private ArrayList<HeaderInfo> deptList;
+    private ArrayList<HeaderInfo> classList;
 
-    public MyListAdapter(Context context, ArrayList<HeaderInfo> deptList) {
+    public NewsListAdapter(Context context, ArrayList<HeaderInfo> classListList) {
         this.context = context;
-        this.deptList = deptList;
+        this.classList = classList;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         ArrayList<DetailInfo> productList =
-                deptList.get(groupPosition).getProductList();
+                classList.get(groupPosition).getProductList();
         return productList.get(childPosition);
     }
 
@@ -57,18 +57,18 @@ public class MyListAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int groupPosition) {
 
         ArrayList<DetailInfo> productList =
-                deptList.get(groupPosition).getProductList();
+                classList.get(groupPosition).getProductList();
         return productList.size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return deptList.get(groupPosition);
+        return classList.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return deptList.size();
+        return classList.size();
     }
 
     @Override
