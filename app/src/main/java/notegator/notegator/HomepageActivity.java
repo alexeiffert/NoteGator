@@ -3,8 +3,13 @@ package notegator.notegator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -23,11 +28,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class HomepageActivity extends AppCompatActivity {
+public class HomepageActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle AB_toggle;
     private SwipeRefreshLayout refreshHome;
     private LinkedHashMap<String, HeaderInfo> mySection = new LinkedHashMap<>();
     private ArrayList<HeaderInfo> SectionList = new ArrayList<>();
@@ -43,6 +51,15 @@ public class HomepageActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+        AB_toggle = new
+                ActionBarDrawerToggle(this, drawerLayout,
+                R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(AB_toggle);
+        AB_toggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         getUserClasses();  // Asynchronous callback to populateList() and configureList()
     }
 
@@ -205,5 +222,34 @@ public class HomepageActivity extends AppCompatActivity {
                 refreshHome.setRefreshing(false); //stop refresh animation when done;
             }
         });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        Toast.makeText(HomepageActivity.this, "hi", Toast.LENGTH_SHORT);
+        if (id == R.id.nav_logout) {
+            mAuth.signOut();
+            startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            finish();
+            return true;
+        } else if (id == R.id.nav_account) {
+            //Open account activity
+            //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            return true;
+        } else if (id == R.id.nav_add_classe) {
+            //startActivity(new Intent(getApplicationContext(), AddClasses.class));
+            return true;
+        }
+        DrawerLayout drawer = findViewById(R.id.drawerLayout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return AB_toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 }
