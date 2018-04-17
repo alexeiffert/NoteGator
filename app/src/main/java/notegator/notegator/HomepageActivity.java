@@ -149,7 +149,7 @@ public class HomepageActivity extends AppCompatActivity {
     //Helper methods for Expandable List
     private void populateList(){
         CollectionReference collectionReference = db.collection("notes");
-        for(String className : userClasses) {
+        for(final String className : userClasses) {
             //TODO trouble with ordering by time
             Query query = collectionReference.whereEqualTo("class", className).limit(20);
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -157,11 +157,14 @@ public class HomepageActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
-                            String date = document.get("time").toString();
-                            String key = document.get("class").toString();
-                            String text = document.get("description").toString();
-                            String thumbnail = document.get("thumbnail").toString();
-                            addNews(date, key, text, thumbnail);
+                            try {
+                                String date = document.get("date").toString();
+                                String text = document.get("description").toString();
+                                String thumbnail = document.get("image").toString();
+                                addNews(date, className, text, thumbnail);
+                            } catch(Exception E) {
+                                //TODO skip?
+                            }
                         }
                         listAdapter.notifyDataSetChanged();
                     }

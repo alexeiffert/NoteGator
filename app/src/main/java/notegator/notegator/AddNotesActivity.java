@@ -20,11 +20,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -64,16 +70,20 @@ public class AddNotesActivity extends AppCompatActivity {
         submitDescription = findViewById(R.id.description);
         submitButton = findViewById(R.id.button_submit);
         addButtonListener();
+        updateDescription();
     }
 
-    private void submitNotes(){
+    private void submitNotes() {
         String date = datePick.getText().toString();
         String description = submitDescription.getText().toString();
+        final StorageReference reference = storageReference.child("images/" + UUID.randomUUID().toString());
+
         Map<String, Object> newNotesMap = new HashMap<>();
+        newNotesMap.put("class", "COP3502");
         newNotesMap.put("date", date);
         newNotesMap.put("description", description);
         newNotesMap.put("uid", mAuth.getUid());
-        newNotesMap.put("image", photoURI.toString());
+        newNotesMap.put("image", reference.toString());
 
         db.collection("notes").add(newNotesMap).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -85,7 +95,8 @@ public class AddNotesActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                uploadImage(photoURI);
+                uploadImage(photoURI, reference);
+                startActivity(new Intent(getApplicationContext(), ClassActivity.class));
             }
         });
     }
@@ -137,15 +148,13 @@ public class AddNotesActivity extends AppCompatActivity {
         return image;
     }
 
-    private void uploadImage(Uri filePath) {
-        if(filePath != null)
-        {
+    private void uploadImage(Uri filePath, StorageReference reference) {
+        if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
-            ref.putFile(filePath)
+            reference.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -159,21 +168,21 @@ public class AddNotesActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddNotesActivity.this, "Oops... "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddNotesActivity.this, "Oops... " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
                         }
                     });
         }
     }
 
-    public void setDate(int year, int month, int day){
+    public void setDate(int year, int month, int day) {
         TextView textView = findViewById(R.id.datePick);
         textView.setText(year + month + day);
     }
@@ -183,11 +192,31 @@ public class AddNotesActivity extends AppCompatActivity {
         newFragment.show(getFragmentManager(), "timePicker");
     }
 
-    public void addButtonListener(){
+    private void addButtonListener() {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submitNotes();
+            }
+        });
+    }
+
+    private void updateDescription() {
+        String uid = mAuth.getUid();
+        CollectionReference collection = db.collection("user");
+        Query query = collection.whereEqualTo("uid", uid);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        String name = document.get("first_name").toString();
+                        name += " ";
+                        name += document.get("last_name").toString().substring(0, 1);
+                        name += '.';
+                        submitDescription.setText(name + " added notes!");
+                    }
+                }
             }
         });
     }
