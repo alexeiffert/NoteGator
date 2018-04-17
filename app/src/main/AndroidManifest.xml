@@ -43,8 +43,8 @@
             android:label="@string/title_activity_homepage" />
         <activity
             android:name=".ClassActivity"
-            android:label="@string/title_activity_class"
-            android:windowSoftInputMode="adjustPan"/>
+            android:label="COP3502"
+            />
         <activity android:name=".AddNotesActivity" />
         <activity
             android:name=".ViewNotes"

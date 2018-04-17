@@ -36,11 +36,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Document;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class ClassActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -97,6 +101,7 @@ public class ClassActivity extends AppCompatActivity
                 HashMap<String, Object> newMessage = new HashMap<String, Object>();
                 newMessage.put("uid", mAuth.getUid());
                 newMessage.put("name", name);
+                newMessage.put("time", new Date());
                 newMessage.put("text", message.getText().toString());
                 newMessage.put("class", "COP3502");
 
@@ -174,9 +179,12 @@ public class ClassActivity extends AppCompatActivity
                     list.clear();
                     for (DocumentSnapshot document : documentSnapshots.getDocuments()) {
                         try {
+                            DateFormat dateFormat = new SimpleDateFormat("MMM d, h:mm");
+                            dateFormat.setTimeZone(TimeZone.getTimeZone("EST"));
+                            String time = dateFormat.format(document.get("time"));
                             String header = document.get("name").toString();
                             String text = document.get("text").toString();
-                            GroupListItem item = new GroupListItem(header, text);
+                            GroupListItem item = new GroupListItem(header, time, text);
                             list.add(item);
                         } catch (Exception e2) {
                             //TODO
