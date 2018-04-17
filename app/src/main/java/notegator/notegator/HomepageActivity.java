@@ -88,14 +88,8 @@ public class HomepageActivity extends AppCompatActivity
                                     int groupPosition, int childPosition, long id) {
             //get the group header
             HeaderInfo headerInfo = SectionList.get(groupPosition);
-
             //get the child info
             DetailInfo detailInfo =  headerInfo.getProductList().get(childPosition);
-
-            //display it or do something with it
-            Toast.makeText(getBaseContext(), "You're looking at " + headerInfo.getName()
-                           + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
-
             startActivity(new Intent(getApplicationContext(), ClassActivity.class));
             return false;
         }
@@ -108,11 +102,6 @@ public class HomepageActivity extends AppCompatActivity
                                     int groupPosition, long id) {
             //get the group header
             HeaderInfo headerInfo = SectionList.get(groupPosition);
-
-            //display it or do something with it
-            Toast.makeText(getBaseContext(), "You're looking at " + headerInfo.getName(),
-                           Toast.LENGTH_LONG).show();
-
             return false;
         }
     };
@@ -228,10 +217,7 @@ public class HomepageActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         int id = item.getItemId();
-
-        Toast.makeText(HomepageActivity.this, "hi", Toast.LENGTH_SHORT);
         if (id == R.id.nav_logout) {
             mAuth.signOut();
             startActivity(new Intent(getApplicationContext(), SignInActivity.class));

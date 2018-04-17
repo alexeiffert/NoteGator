@@ -44,13 +44,13 @@
         <activity
             android:name=".ClassActivity"
             android:label="@string/title_activity_class"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".AddNotesActivity" />
         <activity
             android:name=".ViewNotes"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_view_notes"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme"/>
     </application>
 
 </manifest>

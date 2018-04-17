@@ -3,19 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="notegator.notegator.ClassActivity"
-    tools:showIn="@layout/activity_class">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/refreshClass"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <LinearLayout
-            android:layout_width="327dp"
-            android:layout_height="520dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -28,25 +27,35 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="451dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerview"
-                    android:layout_width="273dp"
-                    android:layout_height="match_parent">
-
-                </android.support.v7.widget.RecyclerView>
+                <ImageView
+                    android:id="@+id/class_logo"
+                    android:layout_width="316dp"
+                    android:layout_height="96dp"
+                    android:layout_weight="1"
+                    android:contentDescription="class logo"
+                    app:srcCompat="@drawable/notegator" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
+                    android:layout_width="98dp"
+                    android:layout_height="86dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:clickable="true"
+                    app:backgroundTint="#E28F41 "
                     app:srcCompat="@android:drawable/ic_menu_edit" />
-
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="342dp">
+
+            </android.support.v7.widget.RecyclerView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,19 +63,21 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    android:id="@+id/message"
                     android:layout_width="248dp"
                     android:layout_height="64dp"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:hint="Type a message!"
                     android:inputType="textPersonName"
-                    android:paddingVertical="10dp"
-                    android:text="Type a message" />
+                    android:paddingVertical="10dp" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/send_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="#E28F41 "
                     android:text="Send" />
             </LinearLayout>
 

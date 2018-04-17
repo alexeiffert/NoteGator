@@ -7,20 +7,6 @@
     android:id="@+id/drawerLayout"
     tools:context="notegator.notegator.HomepageActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:visibility="invisible">
-
-        <!--android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" /-->
-    </android.support.design.widget.AppBarLayout>
-
     <include layout="@layout/content_homepage" />
 
     <android.support.design.widget.NavigationView
@@ -29,6 +15,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu"
-        tools:ignore="ExtraText"></android.support.design.widget.NavigationView>
+        tools:ignore="ExtraText"/>
 
 </android.support.v4.widget.DrawerLayout>
