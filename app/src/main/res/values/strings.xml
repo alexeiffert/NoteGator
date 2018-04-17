@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Note Gator</string>
 
-    <!-- Strings related to login -->
+    <!-- Login -->
     <string name="prompt_facebook">Log in with Facebook</string>
     <string name="prompt_google">Log in with Google</string>
     <string name="prompt_email">Log in with Email</string>
@@ -23,7 +23,17 @@
     <string name="title_activity_homepage">Note Gator</string>
     <string name="title_activity_login">Sign in</string>
 
-    <item name="visible" type="id"/>
-    <item name="masked" type="id"/>
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
+    <string name="title_activity_class">Class Activity</string>
+
+    <!-- Add notes -->
+    <string name="prompt_date">When?</string>
+    <string name="prompt_description">Add a a brief description</string>
+    <string name="button_submit_notes">Submit your notes!</string>
+
+    <string name="title_activity_view_notes">ViewNotes</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
 
