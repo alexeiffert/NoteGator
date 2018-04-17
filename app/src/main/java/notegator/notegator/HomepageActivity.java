@@ -60,6 +60,7 @@ public class HomepageActivity extends AppCompatActivity
         AB_toggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        configureSwipeRefresh();
         getUserClasses();  // Asynchronous callback to populateList() and configureList()
     }
 
@@ -216,9 +217,9 @@ public class HomepageActivity extends AppCompatActivity
         refreshHome.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //SectionList.clear();
+                //TODO refresh isn't working correctly
                 //getUserClasses();
-                //listAdapter.notifyDataSetChanged();
+                listAdapter.notifyDataSetChanged();
                 refreshHome.setRefreshing(false); //stop refresh animation when done;
             }
         });
