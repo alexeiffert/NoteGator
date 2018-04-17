@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#c8edfb"
+    android:background="#6C9AC3	"
     tools:context="notegator.notegator.HomepageActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -20,8 +20,16 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/notegator" />
+
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_homepage" />
+    <include
+        layout="@layout/content_homepage"
+        android:layout_height="394dp" />
 
 </android.support.design.widget.CoordinatorLayout>

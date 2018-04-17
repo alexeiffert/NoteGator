@@ -35,8 +35,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -96,6 +100,7 @@ public class AddNotesActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 uploadImage(photoURI, reference);
+                finish();
                 startActivity(new Intent(getApplicationContext(), ClassActivity.class));
             }
         });
@@ -154,7 +159,23 @@ public class AddNotesActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            reference.putFile(filePath)
+            Document document = new Document();
+            String dirpath=android.os.Environment.getExternalStorageDirectory().toString();
+            try {
+                PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/test"));
+                document.open();
+                Image img = Image.getInstance(filePath.getPath());
+                float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
+                        - document.rightMargin() - 0) / img.getWidth()) * 100;
+                img.scalePercent(scaler);
+                img.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
+                document.add(img);
+                document.close();
+            } catch(Exception e) {
+                //TODO error
+            }
+
+            reference.putFile(Uri.fromFile(new File(dirpath + "/test")))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
