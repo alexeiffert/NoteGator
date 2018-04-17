@@ -34,8 +34,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         mAuth = FirebaseAuth.getInstance();
-
-        //checkIfLogged(); // Starts home if logged
+        checkIfLogged(); // Starts home if logged
         addButtons();
     }
 
@@ -100,8 +99,11 @@ public class SignInActivity extends AppCompatActivity {
     private void checkIfLogged() {
         // Check if user is signed in
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null)
+        if(user != null) {
             startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
+            finish();
+        }
+
     }
 }
 

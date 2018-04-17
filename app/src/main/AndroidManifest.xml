@@ -11,9 +11,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/notegator"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/notegator"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
@@ -31,7 +31,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -44,14 +43,14 @@
             android:label="@string/title_activity_homepage" />
         <activity
             android:name=".ClassActivity"
-            android:label="@string/title_activity_class"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="COP3502"
+            />
         <activity android:name=".AddNotesActivity" />
         <activity
             android:name=".ViewNotes"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_view_notes"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme"/>
     </application>
 
 </manifest>
