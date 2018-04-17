@@ -3,6 +3,7 @@ package notegator.notegator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -27,6 +28,7 @@ public class HomepageActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
+    private SwipeRefreshLayout refreshHome;
     private LinkedHashMap<String, HeaderInfo> mySection = new LinkedHashMap<>();
     private ArrayList<HeaderInfo> SectionList = new ArrayList<>();
     private NewsListAdapter listAdapter;
@@ -190,5 +192,18 @@ public class HomepageActivity extends AppCompatActivity {
         //listener for group heading click
         expandableListView.setOnGroupClickListener(myListGroupClicked);
         collapseAll();
+    }
+
+    private void configureSwipeRefresh(){
+        refreshHome = findViewById(R.id.refreshHome);
+        refreshHome.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //SectionList.clear();
+                //getUserClasses();
+                //listAdapter.notifyDataSetChanged();
+                refreshHome.setRefreshing(false); //stop refresh animation when done;
+            }
+        });
     }
 }

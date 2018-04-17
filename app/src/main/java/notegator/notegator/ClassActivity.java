@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ public class ClassActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+    private SwipeRefreshLayout refreshLayout;
     private Context hackContext;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -46,6 +48,7 @@ public class ClassActivity extends AppCompatActivity {
 
         configureRecyclerview();
         populateRecyclerview();
+        configureSwipeRefresh();
     }
 
     private void isNotetaker(String uid) {
@@ -115,5 +118,18 @@ public class ClassActivity extends AppCompatActivity {
             });
         }
         */
+    }
+
+    private void configureSwipeRefresh() {
+        refreshLayout = findViewById(R.id.refreshClass);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerView.getAdapter().notifyDataSetChanged();
+                list.clear();
+                populateRecyclerview();
+                refreshLayout.setRefreshing(false); //stop refresh animation when done;
+            }
+        });
     }
 }
