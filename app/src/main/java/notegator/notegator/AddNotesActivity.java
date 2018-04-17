@@ -97,6 +97,7 @@ public class AddNotesActivity extends AppCompatActivity {
             public void onSuccess(DocumentReference documentReference) {
                 uploadImage(photoURI, reference);
                 startActivity(new Intent(getApplicationContext(), ClassActivity.class));
+                finish();
             }
         });
     }

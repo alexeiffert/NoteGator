@@ -44,6 +44,7 @@ public class ClassActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        checkIfLogged();
         isNotetaker(mAuth.getUid());
 
         configureRecyclerview();
@@ -131,5 +132,12 @@ public class ClassActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false); //stop refresh animation when done;
             }
         });
+    }
+
+    private void checkIfLogged(){
+        if(mAuth.getUid() == null){
+            startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            finish();
+        }
     }
 }

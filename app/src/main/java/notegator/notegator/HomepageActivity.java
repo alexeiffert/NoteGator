@@ -50,6 +50,7 @@ public class HomepageActivity extends AppCompatActivity
         setContentView(R.layout.activity_homepage);
 
         mAuth = FirebaseAuth.getInstance();
+        checkIfLogged();
         db = FirebaseFirestore.getInstance();
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -235,14 +236,11 @@ public class HomepageActivity extends AppCompatActivity
             mAuth.signOut();
             startActivity(new Intent(getApplicationContext(), SignInActivity.class));
             finish();
-            return true;
         } else if (id == R.id.nav_account) {
             //Open account activity
             //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-            return true;
         } else if (id == R.id.nav_add_classe) {
             //startActivity(new Intent(getApplicationContext(), AddClasses.class));
-            return true;
         }
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
@@ -252,5 +250,12 @@ public class HomepageActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return AB_toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
+    private void checkIfLogged(){
+        if(mAuth.getUid() == null){
+            startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            finish();
+        }
     }
 }
