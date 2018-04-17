@@ -9,7 +9,12 @@ import java.util.ArrayList;
 public class HeaderInfo {
 
     private String name;
-    private ArrayList<DetailInfo> notifications = new ArrayList<DetailInfo>();
+    private ArrayList<DetailInfo> notifications;
+
+    public HeaderInfo(String name) {
+        notifications = new ArrayList<DetailInfo>();
+        this.name = name;
+    }
 
     public String getName() {
         return name;

@@ -35,7 +35,7 @@ public class SignInActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        checkIfLogged(); // Starts home if logged
+        //checkIfLogged(); // Starts home if logged
         addButtons();
     }
 
@@ -94,7 +94,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        checkIfLogged();
+        //checkIfLogged();
     }
 
     private void checkIfLogged() {

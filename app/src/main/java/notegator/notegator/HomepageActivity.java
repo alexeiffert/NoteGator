@@ -1,109 +1,49 @@
 package notegator.notegator;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.Spinner;
-import android.widget.Toast;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class HomepageActivity extends AppCompatActivity {
 
-    private FirebaseDatabase db;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
+    private SwipeRefreshLayout refreshHome;
     private LinkedHashMap<String, HeaderInfo> mySection = new LinkedHashMap<>();
     private ArrayList<HeaderInfo> SectionList = new ArrayList<>();
-
-    private MyListAdapter listAdapter;
+    private NewsListAdapter listAdapter;
     private ExpandableListView expandableListView;
+
+    private ArrayList<String> userClasses;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
 
-        db = FirebaseDatabase.getInstance();
-        populate();
-
-        //get reference to the ExpandableListView
-        expandableListView = (ExpandableListView) findViewById(R.id.myList);
-
-        //create the adapter by passing your ArrayList data
-        listAdapter = new MyListAdapter(HomepageActivity.this, SectionList);
-
-        //attach the adapter to the list
-        expandableListView.setAdapter(listAdapter);
-
-        //listener for child row click
-        expandableListView.setOnChildClickListener(myListItemClicked);
-
-        //listener for group heading click
-        expandableListView.setOnGroupClickListener(myListGroupClicked);
-        collapseAll();
-    }
-
-    //load some initial data into out list
-    private void populate(){
-        //TODO db entry here
-        DatabaseReference ref = db.getReference("news");
-        ref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String key = dataSnapshot.getKey().toString();
-                String text = dataSnapshot.getValue().toString();
-                addProduct(key, text);
-                listAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        addProduct("CIS4914","Eddie Murphey added notes for February 28, 2018");
-        addProduct("CIS4914","Johannes Kepler posted a response to your comment from January 1, 2018");
-        addProduct("CIS4914","Bob added notes for Exam II");
-
-        addProduct("COP4600","Odysseus added notes for February 26, 2018");
-        addProduct("COP4600","Aeneas asked a question on February 2, 2018");
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        getUserClasses();  // Asynchronous callback to populateList() and configureList()
     }
 
     //method to expand all groups
@@ -137,6 +77,7 @@ public class HomepageActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "You're looking at " + headerInfo.getName()
                            + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
 
+            startActivity(new Intent(getApplicationContext(), ClassActivity.class));
             return false;
         }
     };
@@ -153,43 +94,116 @@ public class HomepageActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "You're looking at " + headerInfo.getName(),
                            Toast.LENGTH_LONG).show();
 
-            startActivity(new Intent(getApplicationContext(), ClassActivity.class));
             return false;
         }
     };
 
-    private int addProduct(String department, String product){
+    private int addNews(String date, String className, String text, String thumbnail){
 
         int groupPosition = 0;
 
         //check the hash map if the group already exists
-        HeaderInfo headerInfo = mySection.get(department);
+        HeaderInfo headerInfo = mySection.get(className);
 
-        //add the group if doesn't exists
+        //Add the group if it doesn't exist
         if(headerInfo == null){
-            headerInfo = new HeaderInfo();
-            headerInfo.setName(department);
-            mySection.put(department, headerInfo);
+            headerInfo = new HeaderInfo(className);
+            mySection.put(className, headerInfo);
             SectionList.add(headerInfo);
         }
 
         //get the children for the group
-        ArrayList<DetailInfo> productList = headerInfo.getProductList();
+        ArrayList<DetailInfo> classList = headerInfo.getProductList();
 
         //size of the children list
-        int listSize = productList.size();
+        int listSize = classList.size();
         ++listSize;
 
         //create a new child and add that to the group
-        DetailInfo detailInfo = new DetailInfo();
-        detailInfo.setSequence(String.valueOf(listSize));
-        detailInfo.setName(product);
-        productList.add(detailInfo);
-        headerInfo.setProductList(productList);
+        String sequence = String.valueOf(listSize);
+        DetailInfo detailInfo = new DetailInfo(sequence, text, date, thumbnail);
+        classList.add(detailInfo);
+        headerInfo.setProductList(classList);
 
         //find the group position inside the list
         groupPosition = SectionList.indexOf(headerInfo);
         return groupPosition;
     }
 
+    private void getUserClasses(){
+        String uid = mAuth.getUid();
+        CollectionReference collectionReference = db.collection("user");
+        Query query = collectionReference.whereEqualTo("uid", uid);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot document : task.getResult()) {
+                        userClasses = (ArrayList<String>)document.get("classes");
+                    }
+                    //Callback
+                    populateList();
+                }
+            }
+        });
+    }
+
+    //Helper methods for Expandable List
+    private void populateList(){
+        CollectionReference collectionReference = db.collection("notes");
+        for(final String className : userClasses) {
+            //TODO trouble with ordering by time
+            Query query = collectionReference.whereEqualTo("class", className).limit(20);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            try {
+                                String date = document.get("date").toString();
+                                String text = document.get("description").toString();
+                                String thumbnail = document.get("image").toString();
+                                addNews(date, className, text, thumbnail);
+                            } catch(Exception E) {
+                                //TODO skip?
+                            }
+                        }
+                        listAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+        configureList();
+    }
+
+    private void configureList(){
+        //get reference to the ExpandableListView
+        expandableListView = (ExpandableListView) findViewById(R.id.myList);
+
+        //create the adapter by passing your ArrayList data
+        listAdapter = new NewsListAdapter(HomepageActivity.this, SectionList);
+
+        //attach the adapter to the list
+        expandableListView.setAdapter(listAdapter);
+
+        //listener for child row click
+        expandableListView.setOnChildClickListener(myListItemClicked);
+
+        //listener for group heading click
+        expandableListView.setOnGroupClickListener(myListGroupClicked);
+        collapseAll();
+    }
+
+    private void configureSwipeRefresh(){
+        refreshHome = findViewById(R.id.refreshHome);
+        refreshHome.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //SectionList.clear();
+                //getUserClasses();
+                //listAdapter.notifyDataSetChanged();
+                refreshHome.setRefreshing(false); //stop refresh animation when done;
+            }
+        });
+    }
 }

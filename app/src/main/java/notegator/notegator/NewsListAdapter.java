@@ -12,20 +12,20 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-public class MyListAdapter extends BaseExpandableListAdapter {
+public class NewsListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private ArrayList<HeaderInfo> deptList;
+    private ArrayList<HeaderInfo> classList;
 
-    public MyListAdapter(Context context, ArrayList<HeaderInfo> deptList) {
+    public NewsListAdapter(Context context, ArrayList<HeaderInfo> classList) {
         this.context = context;
-        this.deptList = deptList;
+        this.classList = classList;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         ArrayList<DetailInfo> productList =
-                deptList.get(groupPosition).getProductList();
+                classList.get(groupPosition).getProductList();
         return productList.get(childPosition);
     }
 
@@ -45,10 +45,10 @@ public class MyListAdapter extends BaseExpandableListAdapter {
             view = inflater.inflate(R.layout.child_row, null);
         }
 
-        //TextView sequence = (TextView) view.findViewById(R.id.sequence);
-        //sequence.setText(detailInfo.getSequence().trim() + ") ");
-        TextView childItem = (TextView) view.findViewById(R.id.childItem);
-        childItem.setText(detailInfo.getName().trim());
+        TextView date = (TextView) view.findViewById(R.id.date);
+        date.setText(detailInfo.getDate());
+        TextView text = (TextView) view.findViewById(R.id.text);
+        text.setText(detailInfo.getName().trim());
 
         return view;
     }
@@ -57,18 +57,18 @@ public class MyListAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int groupPosition) {
 
         ArrayList<DetailInfo> productList =
-                deptList.get(groupPosition).getProductList();
+                classList.get(groupPosition).getProductList();
         return productList.size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return deptList.get(groupPosition);
+        return classList.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return deptList.size();
+        return classList.size();
     }
 
     @Override

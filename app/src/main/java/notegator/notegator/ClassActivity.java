@@ -1,33 +1,39 @@
 package notegator.notegator;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClassActivity extends AppCompatActivity {
 
-    private FirebaseDatabase db;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
+    private SwipeRefreshLayout refreshLayout;
     private Context hackContext;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<GroupListItem> list;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +42,54 @@ public class ClassActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        isNotetaker(mAuth.getUid());
+
+        configureRecyclerview();
+        populateRecyclerview();
+        configureSwipeRefresh();
+    }
+
+    private void isNotetaker(String uid) {
+        CollectionReference collectionReference = db.collection("user");
+        Query query = collectionReference.whereEqualTo("uid", uid);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                boolean isNotetaker = false;
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot document : task.getResult()) {
+                        isNotetaker = (boolean)document.get("isNotetaker");
+                    }
+                }
+                if(isNotetaker){
+                    addFab();
+                }
+            }
+        });
+    }
+
+    private void addFab(){
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), AddNotesActivity.class));
+            }
+        });
+    }
+
+    //Helper methods
+    private void configureRecyclerview(){
         hackContext = this;
-        db = FirebaseDatabase.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         list = new ArrayList<GroupListItem>();
 
         adapter = new GroupListAdapter(list, hackContext);
         recyclerView.setAdapter(adapter);
-        populateRecyclerview();
     }
 
     private void populateRecyclerview() {
@@ -52,37 +97,39 @@ public class ClassActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        DatabaseReference ref = db.getReference("news");
-        ref.addChildEventListener(new ChildEventListener() {
+        CollectionReference collectionReference = db.collection("message");
+        /* TODO get messages
+        for(String className : userClasses) {
+            //TODO trouble with ordering by time
+            Query query = collectionReference.whereEqualTo("class", className).limit(20);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            String key = dataSnapshot.getKey().toString();
+                            String text = dataSnapshot.getValue().toString();
+                            GroupListItem groupListItem = new GroupListItem(key, text);
+                            list.add(groupListItem);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+        */
+    }
+
+    private void configureSwipeRefresh() {
+        refreshLayout = findViewById(R.id.refreshClass);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                String key = dataSnapshot.getKey().toString();
-                String text = dataSnapshot.getValue().toString();
-                GroupListItem groupListItem = new GroupListItem(key, text);
-                list.add(groupListItem);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onRefresh() {
+                recyclerView.getAdapter().notifyDataSetChanged();
+                list.clear();
+                populateRecyclerview();
+                refreshLayout.setRefreshing(false); //stop refresh animation when done;
             }
         });
     }
-
 }
