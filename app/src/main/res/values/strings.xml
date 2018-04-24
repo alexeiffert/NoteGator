@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Note Gator</string>
 
+    <!-- Navbar -->
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_classes">Classes</string>
+    <string name="nav_logout">Logout</string>
+
+
     <!-- Login -->
     <string name="prompt_facebook">Log in with Facebook</string>
     <string name="prompt_google">Log in with Google</string>

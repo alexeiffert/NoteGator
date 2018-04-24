@@ -226,6 +226,11 @@ public class ClassActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return AB_toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
@@ -238,6 +243,9 @@ public class ClassActivity extends AppCompatActivity
             //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         } else if (id == R.id.nav_add_classe) {
             //startActivity(new Intent(getApplicationContext(), AddClasses.class));
+        } else if(id == R.id.nav_home){
+            startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
+            finish();
         }
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);

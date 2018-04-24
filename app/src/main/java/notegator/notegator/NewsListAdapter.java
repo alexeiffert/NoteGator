@@ -6,18 +6,28 @@ package notegator.notegator;
 
 import java.util.ArrayList;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class NewsListAdapter extends BaseExpandableListAdapter {
 
+    private FirebaseStorage storage;
     private Context context;
     private ArrayList<HeaderInfo> classList;
 
     public NewsListAdapter(Context context, ArrayList<HeaderInfo> classList) {
+        storage = FirebaseStorage.getInstance();
+
         this.context = context;
         this.classList = classList;
     }
@@ -49,6 +59,14 @@ public class NewsListAdapter extends BaseExpandableListAdapter {
         date.setText(detailInfo.getDate());
         TextView text = (TextView) view.findViewById(R.id.text);
         text.setText(detailInfo.getName().trim());
+
+        //Get the image from Firebase
+        ImageView img = (ImageView)view.findViewById(R.id.thumbnail);
+        StorageReference thumbnailReference = storage.getReferenceFromUrl(detailInfo.getThumbnail());
+        Glide.with(context)
+                .using(new FirebaseImageLoader())
+                .load(thumbnailReference)
+                .into(img);
 
         return view;
     }
