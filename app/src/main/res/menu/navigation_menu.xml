@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_action_home"
+        android:onClick="onNavigationItemSelected"
+        android:title="@string/nav_home" />
+    <item
         android:id="@+id/nav_account"
         android:icon="@drawable/ic_action_user"
         android:onClick="onNavigationItemSelected"
-        android:title="Account" />
+        android:title="@string/nav_profile" />
 
-    <item android:id="@+id/nav_add_classe"
+    <item
+        android:id="@+id/nav_add_classe"
         android:icon="@drawable/ic_action_add"
         android:onClick="onNavigationItemSelected"
-        android:title="Classes" />
+        android:title="@string/nav_classes" />
 
-    <item android:id="@+id/nav_logout"
+    <item
+        android:id="@+id/nav_logout"
         android:icon="@drawable/ic_action_exit"
         android:onClick="onNavigationItemSelected"
-        android:title="Log out" />
+        android:title="@string/nav_logout" />
 </menu>

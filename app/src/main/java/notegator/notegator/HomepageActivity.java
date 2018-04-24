@@ -1,6 +1,7 @@
 package notegator.notegator;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,6 +36,8 @@ public class HomepageActivity extends AppCompatActivity
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private FirebaseStorage storage;
+    private StorageReference sr;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle AB_toggle;
@@ -52,6 +57,8 @@ public class HomepageActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         checkIfLogged();
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        sr = storage.getReference();
 
         drawerLayout = findViewById(R.id.drawerLayout);
         AB_toggle = new
@@ -170,8 +177,9 @@ public class HomepageActivity extends AppCompatActivity
                             try {
                                 String date = document.get("date").toString();
                                 String text = document.get("description").toString();
-                                String thumbnail = document.get("image").toString();
-                                addNews(date, className, text, thumbnail);
+                                String path = document.get("image").toString();
+                                //TODO StorageReference pathReference = storage.getReferenceFromUrl(path);
+                                addNews(date, className, text, path);
                             } catch(Exception E) {
                                 //TODO skip?
                             }
