@@ -242,7 +242,7 @@ public class ClassActivity extends AppCompatActivity
             //Open account activity
             //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         } else if (id == R.id.nav_add_classe) {
-            //startActivity(new Intent(getApplicationContext(), AddClasses.class));
+            startActivity(new Intent(getApplicationContext(), ClassRecyclerView.class));
         } else if(id == R.id.nav_home){
             startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
             finish();

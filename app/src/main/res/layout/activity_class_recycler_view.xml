@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/add_class_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="65dp"
+        android:layout_marginRight="65dp"
+        android:hint="@string/hint_add_classes"
+        android:inputType="text"
+        android:textSize="24sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/class_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/add_class_text"
+        android:layout_marginTop="12dp"></android.support.v7.widget.RecyclerView>
+
+    <ImageButton
+        android:id="@+id/add_class_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/class_list"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="13dp"
+        android:layout_marginRight="13dp"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+</RelativeLayout>

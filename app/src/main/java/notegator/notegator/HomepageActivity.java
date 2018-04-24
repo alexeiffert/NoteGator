@@ -234,7 +234,7 @@ public class HomepageActivity extends AppCompatActivity
             //Open account activity
             //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         } else if (id == R.id.nav_add_classe) {
-            //startActivity(new Intent(getApplicationContext(), AddClasses.class));
+            startActivity(new Intent(getApplicationContext(), ClassRecyclerView.class));
         }
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
