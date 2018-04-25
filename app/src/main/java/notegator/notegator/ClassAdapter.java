@@ -44,6 +44,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> 
         holder.deleteClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String deletedClass = classes.get(position);
                 DocumentReference doc = mFirestore.collection("users").document(mUser.getUid());
                 Map<String, Object> delete = new HashMap<>();

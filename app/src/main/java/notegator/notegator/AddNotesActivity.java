@@ -35,9 +35,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -83,7 +80,7 @@ public class AddNotesActivity extends AppCompatActivity {
         final StorageReference reference = storageReference.child("images/" + UUID.randomUUID().toString());
 
         Map<String, Object> newNotesMap = new HashMap<>();
-        newNotesMap.put("class", "COP3502");
+        newNotesMap.put("courseNumber", "COP3502");
         newNotesMap.put("date", date);
         newNotesMap.put("description", description);
         newNotesMap.put("uid", mAuth.getUid());
@@ -100,7 +97,6 @@ public class AddNotesActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 uploadImage(photoURI, reference);
-                finish();
                 startActivity(new Intent(getApplicationContext(), ClassActivity.class));
                 finish();
             }
@@ -160,6 +156,9 @@ public class AddNotesActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
+            String dirpath=android.os.Environment.getExternalStorageDirectory().toString();
+
+            /*
             Document document = new Document();
             String dirpath=android.os.Environment.getExternalStorageDirectory().toString();
             try {
@@ -175,8 +174,9 @@ public class AddNotesActivity extends AppCompatActivity {
             } catch(Exception e) {
                 //TODO error
             }
+            */
 
-            reference.putFile(Uri.fromFile(new File(dirpath + "/test")))
+            reference.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
