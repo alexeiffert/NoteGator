@@ -56,10 +56,10 @@ public class ClassRecyclerView extends AppCompatActivity {
                     userClasses.add(classString);
                     Map<String, Object> classMap = new HashMap<>();
                     classMap.put("classes", userClasses);
-                    db.collection("user").document(mAuth.getUid()).update(classMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    db.collection("user").document(mAuth.getUid())
+                            .update(classMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            addClassText.setText(null);
                             addClassText.setHint("Class code (e.g. COP3502)");
                         }
                     });

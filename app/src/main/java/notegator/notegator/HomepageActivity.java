@@ -1,5 +1,6 @@
 package notegator.notegator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -96,7 +97,12 @@ public class HomepageActivity extends AppCompatActivity
             HeaderInfo headerInfo = SectionList.get(groupPosition);
             //get the child info
             DetailInfo detailInfo =  headerInfo.getProductList().get(childPosition);
-            startActivity(new Intent(getApplicationContext(), ClassActivity.class));
+
+            Context context = getApplicationContext();
+            Intent intent = new Intent(context, ClassActivity.class);
+            intent.putExtra("courseNumber", headerInfo.getName());
+            context.startActivity(intent);
+            finish();
             return false;
         }
     };
@@ -228,7 +234,7 @@ public class HomepageActivity extends AppCompatActivity
                 //getUserClasses();
                 mySection.clear();
                 SectionList.clear();
-                populateList();
+                getUserClasses();
                 refreshHome.setRefreshing(false); //stop refresh animation when done;
             }
         });

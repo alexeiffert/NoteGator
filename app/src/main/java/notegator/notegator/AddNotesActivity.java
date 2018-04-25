@@ -3,6 +3,7 @@ package notegator.notegator;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -53,6 +54,8 @@ public class AddNotesActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private Uri photoURI;
 
+    private String courseNumber;
+
     private TextView datePick;
     private EditText submitDescription;
     private Button submitButton;
@@ -61,6 +64,9 @@ public class AddNotesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
+
+        courseNumber =  getIntent().getStringExtra("courseNumber");
+        getSupportActionBar().setTitle(courseNumber);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -80,7 +86,7 @@ public class AddNotesActivity extends AppCompatActivity {
         final StorageReference reference = storageReference.child("images/" + UUID.randomUUID().toString());
 
         Map<String, Object> newNotesMap = new HashMap<>();
-        newNotesMap.put("courseNumber", "COP3502");
+        newNotesMap.put("courseNumber", courseNumber);
         newNotesMap.put("date", date);
         newNotesMap.put("description", description);
         newNotesMap.put("uid", mAuth.getUid());
@@ -97,7 +103,10 @@ public class AddNotesActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 uploadImage(photoURI, reference);
-                startActivity(new Intent(getApplicationContext(), ClassActivity.class));
+                Context context = getApplicationContext();
+                Intent intent = new Intent(context, ClassActivity.class);
+                intent.putExtra("courseNumber", courseNumber);
+                context.startActivity(intent);
                 finish();
             }
         });
@@ -224,6 +233,8 @@ public class AddNotesActivity extends AppCompatActivity {
     }
 
     private void updateDescription() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d, YYYY");
+        datePick.setText(sdf.format(new Date()));
         String uid = mAuth.getUid();
         CollectionReference collection = db.collection("user");
         Query query = collection.whereEqualTo("uid", uid);

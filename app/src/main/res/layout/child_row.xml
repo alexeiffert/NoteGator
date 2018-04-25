@@ -79,7 +79,7 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center_vertical|left"
                     android:paddingRight="30dp"
-                    android:textSize="30sp"
+                    android:textSize="18dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
