@@ -1,16 +1,13 @@
 package notegator.notegator;
 
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,10 +33,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,6 +54,7 @@ public class AddNotesActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private StorageReference storageReference;
+    private File photoFile;
     private Uri photoURI;
 
     private String courseNumber;
@@ -71,6 +74,7 @@ public class AddNotesActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+        photoFile = null;
         dispatchTakePictureIntent();
 
         datePick = findViewById(R.id.datePick);
@@ -117,7 +121,7 @@ public class AddNotesActivity extends AppCompatActivity {
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
@@ -143,6 +147,7 @@ public class AddNotesActivity extends AppCompatActivity {
         }
     }
 
+    //Called by dispatch to create a new file in storage
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -165,27 +170,31 @@ public class AddNotesActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            String dirpath=android.os.Environment.getExternalStorageDirectory().toString();
-
-            /*
-            Document document = new Document();
-            String dirpath=android.os.Environment.getExternalStorageDirectory().toString();
+            Document document = new Document(PageSize.A4, 38, 38, 50, 38);
+            Uri testuri = null;
             try {
-                PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/test"));
-                document.open();
-                Image img = Image.getInstance(filePath.getPath());
-                float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
-                        - document.rightMargin() - 0) / img.getWidth()) * 100;
-                img.scalePercent(scaler);
-                img.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
-                document.add(img);
-                document.close();
-            } catch(Exception e) {
-                //TODO error
-            }
-            */
+                File storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                File image = File.createTempFile(
+                        "test",  /* prefix */
+                        ".pdf",         /* suffix */
+                        storageDir      /* directory */
+                );
+                testuri = Uri.fromFile(image);
 
-            reference.putFile(filePath)
+                PdfWriter writer = PdfWriter.getInstance(document,
+                        new FileOutputStream(image));
+
+                writer.open();
+                document.open();
+                //This is a slight hack, but it works for now
+                document.add(Image.getInstance(photoFile.getAbsolutePath()));
+                document.close();
+                writer.close();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+
+            reference.putFile(testuri)//filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
