@@ -28,7 +28,8 @@
 
         <activity
             android:name=".SignInActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -37,14 +38,15 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".HomepageActivity"
             android:label="@string/title_activity_homepage" />
         <activity
             android:name=".ClassActivity"
             android:label="COP3502"
-            />
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity android:name=".ClassRecyclerView" />
         <activity android:name=".AddNotesActivity" />
         <activity

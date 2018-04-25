@@ -53,6 +53,7 @@ public class ClassActivity extends AppCompatActivity
     private FirebaseAuth mAuth;
     private String name;
 
+    private String courseNumber;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle AB_toggle;
     private SwipeRefreshLayout refreshLayout;
@@ -67,6 +68,9 @@ public class ClassActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class);
+
+        courseNumber =  getIntent().getStringExtra("courseNumber");
+        getSupportActionBar().setTitle(courseNumber);
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -103,7 +107,7 @@ public class ClassActivity extends AppCompatActivity
                 newMessage.put("name", name);
                 newMessage.put("time", new Date());
                 newMessage.put("text", message.getText().toString());
-                newMessage.put("class", "COP3502");
+                newMessage.put("courseNumber", courseNumber);
 
                 CollectionReference collection = db.collection("message");
                 collection.add(newMessage);
@@ -179,13 +183,15 @@ public class ClassActivity extends AppCompatActivity
                     list.clear();
                     for (DocumentSnapshot document : documentSnapshots.getDocuments()) {
                         try {
-                            DateFormat dateFormat = new SimpleDateFormat("MMM d, h:mm");
-                            dateFormat.setTimeZone(TimeZone.getTimeZone("EST"));
-                            String time = dateFormat.format(document.get("time"));
-                            String header = document.get("name").toString();
-                            String text = document.get("text").toString();
-                            GroupListItem item = new GroupListItem(header, time, text);
-                            list.add(item);
+                            if(document.get("courseNumber").toString().equals(courseNumber)) {
+                                DateFormat dateFormat = new SimpleDateFormat("MMM d, h:mm");
+                                dateFormat.setTimeZone(TimeZone.getTimeZone("EST"));
+                                String time = dateFormat.format(document.get("time"));
+                                String header = document.get("name").toString();
+                                String text = document.get("text").toString();
+                                GroupListItem item = new GroupListItem(header, time, text);
+                                list.add(item);
+                            }
                         } catch (Exception e2) {
                             //TODO
                         }
