@@ -224,6 +224,8 @@ public class AddNotesActivity extends AppCompatActivity {
     }
 
     private void updateDescription() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d, YYYY");
+        datePick.setText(sdf.format(new Date()));
         String uid = mAuth.getUid();
         CollectionReference collection = db.collection("user");
         Query query = collection.whereEqualTo("uid", uid);
