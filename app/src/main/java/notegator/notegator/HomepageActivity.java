@@ -232,11 +232,9 @@ public class HomepageActivity extends AppCompatActivity
             public void onRefresh() {
                 //TODO refresh isn't working correctly
                 //getUserClasses();
-                userClasses.clear();
                 mySection.clear();
                 SectionList.clear();
                 getUserClasses();
-                populateList();
                 refreshHome.setRefreshing(false); //stop refresh animation when done;
             }
         });

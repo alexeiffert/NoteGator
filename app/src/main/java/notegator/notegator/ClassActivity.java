@@ -145,7 +145,11 @@ public class ClassActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), AddNotesActivity.class));
+                Context context = getApplicationContext();
+                Intent intent = new Intent(context, AddNotesActivity.class);
+                intent.putExtra("courseNumber", courseNumber);
+                context.startActivity(intent);
+                finish();
             }
         });
     }
