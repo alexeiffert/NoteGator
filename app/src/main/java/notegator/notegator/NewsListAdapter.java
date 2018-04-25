@@ -7,6 +7,7 @@ package notegator.notegator;
 import java.util.ArrayList;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,12 +62,16 @@ public class NewsListAdapter extends BaseExpandableListAdapter {
         text.setText(detailInfo.getName().trim());
 
         //Get the image from Firebase
-        ImageView img = (ImageView)view.findViewById(R.id.thumbnail);
-        StorageReference thumbnailReference = storage.getReferenceFromUrl(detailInfo.getThumbnail());
-        Glide.with(context)
-                .using(new FirebaseImageLoader())
-                .load(thumbnailReference)
-                .into(img);
+        try {
+            ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
+            StorageReference thumbnailReference = storage.getReferenceFromUrl(detailInfo.getThumbnail());
+            Glide.with(context)
+                    .using(new FirebaseImageLoader())
+                    .load(thumbnailReference)
+                    .into(img);
+        } catch(Exception e){
+            Log.d("Load img", "Error");
+        }
 
         return view;
     }

@@ -45,6 +45,7 @@
             android:name=".ClassActivity"
             android:label="COP3502"
             />
+        <activity android:name=".ClassRecyclerView" />
         <activity android:name=".AddNotesActivity" />
         <activity
             android:name=".ViewNotes"

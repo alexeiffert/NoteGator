@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -37,7 +38,6 @@ public class HomepageActivity extends AppCompatActivity
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
-    private StorageReference sr;
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle AB_toggle;
@@ -58,7 +58,6 @@ public class HomepageActivity extends AppCompatActivity
         checkIfLogged();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-        sr = storage.getReference();
 
         drawerLayout = findViewById(R.id.drawerLayout);
         AB_toggle = new
@@ -168,7 +167,7 @@ public class HomepageActivity extends AppCompatActivity
         CollectionReference collectionReference = db.collection("notes");
         for(final String className : userClasses) {
             //TODO trouble with ordering by time
-            Query query = collectionReference.whereEqualTo("class", className).limit(20);
+            Query query = collectionReference.whereEqualTo("courseNumber", className).limit(20);
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -178,18 +177,28 @@ public class HomepageActivity extends AppCompatActivity
                                 String date = document.get("date").toString();
                                 String text = document.get("description").toString();
                                 String path = document.get("image").toString();
-                                //TODO StorageReference pathReference = storage.getReferenceFromUrl(path);
                                 addNews(date, className, text, path);
+
                             } catch(Exception E) {
-                                //TODO skip?
+                                Log.d("", "Problem adding notes");
                             }
                         }
                         listAdapter.notifyDataSetChanged();
                     }
+                    checkEmpty(className);
                 }
             });
         }
         configureList();
+    }
+
+    private void checkEmpty(String className){
+        if(mySection.get(className) == null){  // If the group doesn't have any notes yet
+            addNews("Nothing yet", className,
+                    "The designated notetaker for this class hasn't " +
+                            "posted any notes. Check back soon!",
+                    "");
+        }
     }
 
     private void configureList(){
@@ -217,7 +226,9 @@ public class HomepageActivity extends AppCompatActivity
             public void onRefresh() {
                 //TODO refresh isn't working correctly
                 //getUserClasses();
-                listAdapter.notifyDataSetChanged();
+                mySection.clear();
+                SectionList.clear();
+                populateList();
                 refreshHome.setRefreshing(false); //stop refresh animation when done;
             }
         });
@@ -234,7 +245,7 @@ public class HomepageActivity extends AppCompatActivity
             //Open account activity
             //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         } else if (id == R.id.nav_add_classe) {
-            //startActivity(new Intent(getApplicationContext(), AddClasses.class));
+            startActivity(new Intent(getApplicationContext(), ClassRecyclerView.class));
         }
         DrawerLayout drawer = findViewById(R.id.drawerLayout);
         drawer.closeDrawer(GravityCompat.START);
