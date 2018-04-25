@@ -4,9 +4,14 @@ package notegator.notegator;
  * Created by Alex on 2/25/2018.
  */
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +24,9 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.shockwave.pdfium.PdfDocument;
+import com.shockwave.pdfium.PdfiumCore;
+
 
 public class NewsListAdapter extends BaseExpandableListAdapter {
 
@@ -62,6 +70,7 @@ public class NewsListAdapter extends BaseExpandableListAdapter {
         text.setText(detailInfo.getName().trim());
 
         //Get the image from Firebase
+
         try {
             ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
             StorageReference thumbnailReference = storage.getReferenceFromUrl(detailInfo.getThumbnail());

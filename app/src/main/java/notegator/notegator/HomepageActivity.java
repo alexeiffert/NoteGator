@@ -14,12 +14,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -98,11 +100,20 @@ public class HomepageActivity extends AppCompatActivity
             //get the child info
             DetailInfo detailInfo =  headerInfo.getProductList().get(childPosition);
 
-            Context context = getApplicationContext();
-            Intent intent = new Intent(context, ClassActivity.class);
-            intent.putExtra("courseNumber", headerInfo.getName());
-            context.startActivity(intent);
-            finish();
+            if(!detailInfo.getThumbnail().equals("")) {
+                storage.getReferenceFromUrl(detailInfo.getThumbnail()).getDownloadUrl()
+                        .addOnSuccessListener(new OnSuccessListener<Uri>()
+                {
+                    @Override
+                    public void onSuccess(Uri downloadUrl)
+                    {
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(downloadUrl.toString()));
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+            }
             return false;
         }
     };
@@ -114,6 +125,13 @@ public class HomepageActivity extends AppCompatActivity
                                     int groupPosition, long id) {
             //get the group header
             HeaderInfo headerInfo = SectionList.get(groupPosition);
+            if(parent.isGroupExpanded(groupPosition)) {
+                Context context = getApplicationContext();
+                Intent intent = new Intent(context, ClassActivity.class);
+                intent.putExtra("courseNumber", headerInfo.getName());
+                context.startActivity(intent);
+                finish();
+            }
             return false;
         }
     };
@@ -182,7 +200,7 @@ public class HomepageActivity extends AppCompatActivity
                             try {
                                 String date = document.get("date").toString();
                                 String text = document.get("description").toString();
-                                String path = document.get("image").toString();
+                                String path = document.get("path").toString();
                                 addNews(date, className, text, path);
 
                             } catch(Exception E) {

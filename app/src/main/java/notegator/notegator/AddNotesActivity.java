@@ -87,14 +87,14 @@ public class AddNotesActivity extends AppCompatActivity {
     private void submitNotes() {
         String date = datePick.getText().toString();
         String description = submitDescription.getText().toString();
-        final StorageReference reference = storageReference.child("images/" + UUID.randomUUID().toString());
+        final StorageReference reference = storageReference.child("documents/" + UUID.randomUUID().toString());
 
         Map<String, Object> newNotesMap = new HashMap<>();
         newNotesMap.put("courseNumber", courseNumber);
         newNotesMap.put("date", date);
         newNotesMap.put("description", description);
         newNotesMap.put("uid", mAuth.getUid());
-        newNotesMap.put("image", reference.toString());
+        newNotesMap.put("path", reference.toString());
 
         db.collection("notes").add(newNotesMap).addOnFailureListener(new OnFailureListener() {
             @Override
