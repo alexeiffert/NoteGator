@@ -136,7 +136,7 @@ public class HomepageActivity extends AppCompatActivity
         }
     };
 
-    private int addNews(String date, String className, String text, String thumbnail){
+    private int addNews(String date, String className, String text, String path, String thumbnail){
 
         int groupPosition = 0;
 
@@ -159,7 +159,7 @@ public class HomepageActivity extends AppCompatActivity
 
         //create a new child and add that to the group
         String sequence = String.valueOf(listSize);
-        DetailInfo detailInfo = new DetailInfo(sequence, text, date, thumbnail);
+        DetailInfo detailInfo = new DetailInfo(sequence, text, date, path, thumbnail);
         classList.add(detailInfo);
         headerInfo.setProductList(classList);
 
@@ -200,8 +200,11 @@ public class HomepageActivity extends AppCompatActivity
                             try {
                                 String date = document.get("date").toString();
                                 String text = document.get("description").toString();
+                                String thumbnail = "";
+                                if(document.get("thumbnail") != null)
+                                    thumbnail = document.get("thumbnail").toString();
                                 String path = document.get("path").toString();
-                                addNews(date, className, text, path);
+                                addNews(date, className, text, path, thumbnail);
 
                             } catch(Exception E) {
                                 Log.d("", "Problem adding notes");
@@ -221,7 +224,7 @@ public class HomepageActivity extends AppCompatActivity
             addNews("Nothing yet", className,
                     "The designated notetaker for this class hasn't " +
                             "posted any notes. Check back soon!",
-                    "");
+                    "", "");
         }
     }
 

@@ -88,12 +88,14 @@ public class AddNotesActivity extends AppCompatActivity {
         String date = datePick.getText().toString();
         String description = submitDescription.getText().toString();
         final StorageReference reference = storageReference.child("documents/" + UUID.randomUUID().toString());
+        final StorageReference thumbnailRef = storageReference.child("thumbnails/" + UUID.randomUUID().toString());
 
         Map<String, Object> newNotesMap = new HashMap<>();
         newNotesMap.put("courseNumber", courseNumber);
         newNotesMap.put("date", date);
         newNotesMap.put("description", description);
         newNotesMap.put("uid", mAuth.getUid());
+        newNotesMap.put("thumbnail", thumbnailRef.toString());
         newNotesMap.put("path", reference.toString());
 
         db.collection("notes").add(newNotesMap).addOnFailureListener(new OnFailureListener() {
@@ -106,7 +108,7 @@ public class AddNotesActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                uploadImage(photoURI, reference);
+                uploadImage(photoURI, reference, thumbnailRef);
                 Context context = getApplicationContext();
                 Intent intent = new Intent(context, ClassActivity.class);
                 intent.putExtra("courseNumber", courseNumber);
@@ -164,11 +166,12 @@ public class AddNotesActivity extends AppCompatActivity {
         return image;
     }
 
-    private void uploadImage(Uri filePath, StorageReference reference) {
+    private void uploadImage(Uri filePath, StorageReference reference, StorageReference thumbnailRef) {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
+            thumbnailRef.putFile(filePath);  // Upload thumbnail
 
             Document document = new Document(PageSize.A4, 38, 38, 50, 38);
             Uri testuri = null;
@@ -194,7 +197,7 @@ public class AddNotesActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            reference.putFile(testuri)//filePath)
+            reference.putFile(testuri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
