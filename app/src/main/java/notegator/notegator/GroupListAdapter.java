@@ -35,9 +35,8 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.View
         GroupListItem groupListItem = list.get(position);
         //TODO this is causing the app to crash... not sure why
         holder.setTextViewHeader(groupListItem.getHeader());
+        holder.setTextViewTime(groupListItem.getTime());
         holder.setTextViewText(groupListItem.getText());
-        System.out.println(groupListItem.getHeader());
-        System.out.println(groupListItem.getText());
     }
 
     @Override
@@ -48,16 +47,19 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewHeader;
+        private TextView textViewTime;
         private TextView textViewText;
 
         public ViewHolder(View itemView) {
             super(itemView);
             textViewHeader = (TextView) itemView.findViewById(R.id.header);
+            textViewTime = (TextView)itemView.findViewById(R.id.time);
             textViewText = (TextView) itemView.findViewById(R.id.text);
         }
         public void setTextViewHeader(String text) {
             textViewHeader.setText(text);
         }
+        public void setTextViewTime(String text){ textViewTime.setText(text);}
         public void setTextViewText(String text){
             textViewText.setText(text);
         }

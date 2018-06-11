@@ -1,15 +1,13 @@
 package notegator.notegator;
 
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,11 +35,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +54,10 @@ public class AddNotesActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private StorageReference storageReference;
+    private File photoFile;
     private Uri photoURI;
+
+    private String courseNumber;
 
     private TextView datePick;
     private EditText submitDescription;
@@ -65,9 +68,13 @@ public class AddNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
 
+        courseNumber =  getIntent().getStringExtra("courseNumber");
+        getSupportActionBar().setTitle(courseNumber);
+
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+        photoFile = null;
         dispatchTakePictureIntent();
 
         datePick = findViewById(R.id.datePick);
@@ -80,14 +87,16 @@ public class AddNotesActivity extends AppCompatActivity {
     private void submitNotes() {
         String date = datePick.getText().toString();
         String description = submitDescription.getText().toString();
-        final StorageReference reference = storageReference.child("images/" + UUID.randomUUID().toString());
+        final StorageReference reference = storageReference.child("documents/" + UUID.randomUUID().toString());
+        final StorageReference thumbnailRef = storageReference.child("thumbnails/" + UUID.randomUUID().toString());
 
         Map<String, Object> newNotesMap = new HashMap<>();
-        newNotesMap.put("class", "COP3502");
+        newNotesMap.put("courseNumber", courseNumber);
         newNotesMap.put("date", date);
         newNotesMap.put("description", description);
         newNotesMap.put("uid", mAuth.getUid());
-        newNotesMap.put("image", reference.toString());
+        newNotesMap.put("thumbnail", thumbnailRef.toString());
+        newNotesMap.put("path", reference.toString());
 
         db.collection("notes").add(newNotesMap).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -99,9 +108,12 @@ public class AddNotesActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                uploadImage(photoURI, reference);
+                uploadImage(photoURI, reference, thumbnailRef);
+                Context context = getApplicationContext();
+                Intent intent = new Intent(context, ClassActivity.class);
+                intent.putExtra("courseNumber", courseNumber);
+                context.startActivity(intent);
                 finish();
-                startActivity(new Intent(getApplicationContext(), ClassActivity.class));
             }
         });
     }
@@ -111,7 +123,7 @@ public class AddNotesActivity extends AppCompatActivity {
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
@@ -137,6 +149,7 @@ public class AddNotesActivity extends AppCompatActivity {
         }
     }
 
+    //Called by dispatch to create a new file in storage
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -153,29 +166,38 @@ public class AddNotesActivity extends AppCompatActivity {
         return image;
     }
 
-    private void uploadImage(Uri filePath, StorageReference reference) {
+    private void uploadImage(Uri filePath, StorageReference reference, StorageReference thumbnailRef) {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
+            thumbnailRef.putFile(filePath);  // Upload thumbnail
 
-            Document document = new Document();
-            String dirpath=android.os.Environment.getExternalStorageDirectory().toString();
+            Document document = new Document(PageSize.A4, 38, 38, 50, 38);
+            Uri testuri = null;
             try {
-                PdfWriter.getInstance(document, new FileOutputStream(dirpath + "/test"));
+                File storageDir = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                File image = File.createTempFile(
+                        "test",  /* prefix */
+                        ".pdf",         /* suffix */
+                        storageDir      /* directory */
+                );
+                testuri = Uri.fromFile(image);
+
+                PdfWriter writer = PdfWriter.getInstance(document,
+                        new FileOutputStream(image));
+
+                writer.open();
                 document.open();
-                Image img = Image.getInstance(filePath.getPath());
-                float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
-                        - document.rightMargin() - 0) / img.getWidth()) * 100;
-                img.scalePercent(scaler);
-                img.setAlignment(Image.ALIGN_CENTER | Image.ALIGN_TOP);
-                document.add(img);
+                //This is a slight hack, but it works for now
+                document.add(Image.getInstance(photoFile.getAbsolutePath()));
                 document.close();
+                writer.close();
             } catch(Exception e) {
-                //TODO error
+                e.printStackTrace();
             }
 
-            reference.putFile(Uri.fromFile(new File(dirpath + "/test")))
+            reference.putFile(testuri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -223,6 +245,8 @@ public class AddNotesActivity extends AppCompatActivity {
     }
 
     private void updateDescription() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d, YYYY");
+        datePick.setText(sdf.format(new Date()));
         String uid = mAuth.getUid();
         CollectionReference collection = db.collection("user");
         Query query = collection.whereEqualTo("uid", uid);

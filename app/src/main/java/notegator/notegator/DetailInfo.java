@@ -9,12 +9,14 @@ public class DetailInfo {
     private String date;
     private String text;
     private String sequence;
+    private String path;
     private String thumbnail;
 
-    public DetailInfo(String sequence, String text, String date, String thumbnail){
+    public DetailInfo(String sequence, String text, String date, String path, String thumbnail){
         this.date = date;
         this.text = text;
         this.sequence = sequence;
+        this.path = path;
         this.thumbnail = thumbnail;
     }
 
@@ -37,6 +39,13 @@ public class DetailInfo {
     }
     public void setSequence(String sequence) {
         this.sequence = sequence;
+    }
+
+    public String getPath() {
+        return path;
+    }
+    public void setPath(String path){
+        this.path = path;
     }
 
     public String getThumbnail() {

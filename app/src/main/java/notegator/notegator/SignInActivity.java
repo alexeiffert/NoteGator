@@ -1,5 +1,6 @@
 package notegator.notegator;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,9 +35,15 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        mAuth = FirebaseAuth.getInstance();
+        //Soft hide keyboard
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
-        //checkIfLogged(); // Starts home if logged
+        mAuth = FirebaseAuth.getInstance();
+        checkIfLogged(); // Starts home if logged
         addButtons();
     }
 
@@ -100,8 +108,11 @@ public class SignInActivity extends AppCompatActivity {
     private void checkIfLogged() {
         // Check if user is signed in
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null)
+        if(user != null) {
             startActivity(new Intent(getApplicationContext(), HomepageActivity.class));
+            finish();
+        }
+
     }
 }
 

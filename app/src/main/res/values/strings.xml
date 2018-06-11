@@ -1,6 +1,19 @@
 <resources>
     <string name="app_name">Note Gator</string>
 
+    <!-- Navbar -->
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_classes">Classes</string>
+    <string name="nav_logout">Logout</string>
+
+    <!-- Add Classes -->
+    <string name="hint_add_classes">Class code (e.g. COP3502)</string>
+
+    <!-- Home -->
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
     <!-- Login -->
     <string name="prompt_facebook">Log in with Facebook</string>
     <string name="prompt_google">Log in with Google</string>
@@ -35,5 +48,7 @@
     <string name="title_activity_view_notes">ViewNotes</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+
 </resources>
 
